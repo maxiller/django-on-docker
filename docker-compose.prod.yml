@@ -1,4 +1,4 @@
-version: '3.8'
+# version: '3'
 
 services:
   web:
@@ -15,12 +15,16 @@ services:
       - ./.env.prod
     depends_on:
       - db
+    networks:
+      - back
   db:
     image: postgres:alpine
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     env_file:
       - ./.env.prod.db
+    networks:
+      - back
   nginx:
     build: ./nginx
     volumes:
@@ -30,8 +34,16 @@ services:
       - 1337:80
     depends_on:
       - web
+    networks:
+      - back
+      - front
 
 volumes:
   postgres_data:
   static_volume:
   media_volume:
+
+networks:
+  back:
+    internal: true
+  front:
